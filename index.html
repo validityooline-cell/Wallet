@@ -375,58 +375,69 @@
                         <button id="copy-address-btn" class="btn-primary w-full">Copy Address</button>
                     </div>
                 </div>
-
-                <!-- Withdraw Page -->
+                       <!-- Withdraw Page -->
                 <div id="withdraw-page" class="page page-hidden">
-                    <button id="withdraw-back-btn" class="text-white mb-4">&larr; Back</button>
-                    <h2 class="text-2xl font-bold mb-6 text-center">Withdraw Crypto</h2>
-                    
-                    <!-- Step 1: Withdraw Form -->
-                    <div id="withdraw-step-1" class="page">
-                        <label for="withdraw-coin" class="text-sm text-binance-secondary">Select Coin</label>
-                        <select id="withdraw-coin" class="w-full p-2 rounded-lg bg-binance-card mb-4">
-                            <option>Bitcoin (BTC)</option>
-                            <option>Ethereum (ETH)</option>
-                            <option>BNB (BNB)</option>
-                        </select>
-                        
-                        <label for="withdraw-address" class="text-sm text-binance-secondary">Recipient Address</label>
-                        <input type="text" id="withdraw-address" class="input-text w-full p-2 rounded-lg mb-4" placeholder="Enter wallet address">
+               <button id="withdraw-back-btn" class="text-white mb-4">&larr; Back</button>
+                <h2 class="text-2xl font-bold mb-6 text-center">Withdraw Crypto</h2>
+    
+                  <!-- Step 1: Withdraw Form -->
+              <div id="withdraw-step-1" class="page">
+        <label for="withdraw-coin" class="text-sm text-binance-secondary">Select Coin</label>
+        <select id="withdraw-coin" class="w-full p-2 rounded-lg bg-binance-card mb-4">
+            <option>Bitcoin (BTC)</option>
+            <option>Ethereum (ETH)</option>
+            <option>BNB (BNB)</option>
+        </select>
+        <label for="withdraw-address" class="text-sm text-binance-secondary">Recipient Address</label>
+        <input type="text" id="withdraw-address" class="input-text w-full p-2 rounded-lg mb-4" placeholder="Enter wallet address">
+        <label for="withdraw-amount" class="text-sm text-binance-secondary">Amount</label>
+        <input type="number" id="withdraw-amount" class="input-text w-full p-2 rounded-lg mb-4" placeholder="0.00">
+        <button id="confirm-withdraw-btn" class="btn-primary w-full">Confirm Withdraw</button>
+    </div>
 
-                        <label for="withdraw-amount" class="text-sm text-binance-secondary">Amount</label>
-                        <input type="number" id="withdraw-amount" class="input-text w-full p-2 rounded-lg mb-4" placeholder="0.00">
-                        
-                        <button id="confirm-withdraw-btn" class="btn-primary w-full">Confirm Withdraw</button>
-                    </div>
+    <!-- Step 2: Confirmation -->
+    <div id="withdraw-confirmation-page" class="page-hidden text-center">
+        <h3 class="text-xl font-bold mb-4">Confirm Withdrawal</h3>
+        <div class="bg-binance-card p-4 rounded-lg mb-4">
+            <p class="text-sm text-binance-secondary">Coin: <span id="confirm-coin" class="font-bold">BTC</span></p>
+            <p class="text-sm text-binance-secondary">Address: <span id="confirm-address" class="break-words font-mono">...</span></p>
+            <p class="text-sm text-binance-secondary">Amount: <span id="confirm-amount" class="font-bold"></span></p>
+        </div>
+        <button id="submit-tx-btn" class="btn-primary w-full">Submit Transaction</button>
+    </div>
+    
+    <!-- Step 3: Code Input -->
+    <div id="withdraw-code-page" class="page-hidden text-center">
+        <h3 class="text-xl font-bold mb-4">Enter 6-Digit Confirmation Code</h3>
+        <p class="text-sm text-binance-secondary mb-2">Please enter one of your confirmation codes to proceed.</p>
+        <input type="text" id="withdraw-code-input" maxlength="6" class="input-text w-full p-2 rounded-lg mb-4" placeholder="123456">
+        <div id="withdraw-code-msg" class="text-red-500 mb-2"></div>
+        <button id="withdraw-code-submit-btn" class="btn-primary w-full">Validate &amp; Continue</button>
+    </div>
 
-                    <!-- Step 2: Confirmation -->
-                    <div id="withdraw-confirmation-page" class="page-hidden text-center">
-                        <h3 class="text-xl font-bold mb-4">Confirm Withdrawal</h3>
-                        <div class="bg-binance-card p-4 rounded-lg mb-4">
-                            <p class="text-sm text-binance-secondary">Coin: <span id="confirm-coin" class="font-bold">BTC</span></p>
-                            <p class="text-sm text-binance-secondary">Address: <span id="confirm-address" class="break-words font-mono">...</span></p>
-                            <p class="text-sm text-binance-secondary">Amount: <span id="confirm-amount" class="font-bold"></span></p>
-                        </div>
-                        <button id="submit-tx-btn" class="btn-primary w-full">Submit Transaction</button>
-                    </div>
-                    
-                    <!-- Step 3: Processing -->
-                    <div id="withdraw-processing-page" class="page-hidden text-center">
-                        <svg class="animate-spin h-10 w-10 text-yellow-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <p class="mt-4">Processing withdrawal...</p>
-                    </div>
-                    
-                    <!-- Step 4: Success -->
-                    <div id="withdraw-success-page" class="page-hidden text-center">
-                        <svg class="h-16 w-16 mx-auto text-binance-green" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        <h3 class="text-xl font-bold mt-4">Withdrawal Successful!</h3>
-                        <p class="text-binance-secondary mt-2">Your funds have been sent.</p>
-                        <button id="back-to-home-btn" class="btn-primary w-full mt-4">Back to Home</button>
-                    </div>
-                </div>
+    <!-- Step 4: Processing -->
+    <div id="withdraw-processing-page" class="page-hidden text-center">
+        <svg class="animate-spin h-10 w-10 text-yellow-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p class="mt-4">Processing withdrawal...</p>
+    </div>
+    
+    <!-- Step 5: Success -->
+    <div id="withdraw-success-page" class="page-hidden text-center">
+        <svg class="h-16 w-16 mx-auto text-binance-green" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+        <h3 class="text-xl font-bold mt-4">Withdrawal Successful!</h3>
+        <p class="text-binance-secondary mt-2">Your funds have been sent.</p>
+        <button id="back-to-home-btn" class="btn-primary w-full mt-4">Back to Home</button>
+    </div>
+
+    <!-- Activity/Transactions -->
+    <div class="mt-6">
+      <h4 class="text-lg font-bold mb-2">Ongoing Withdrawals:</h4>
+      <div id="recentTx"></div>
+    </div>
+</div>
 
                 <!-- Other Pages (e.g., Trade, Markets, etc.) - Initially hidden -->
                 <div id="markets-page" class="page page-hidden">
@@ -1279,6 +1290,241 @@
         document.getElementById('funding-tab').addEventListener('click', () => showMainAppPage('funding-page'));
         document.getElementById('margin-tab').addEventListener('click', () => showMainAppPage('margin-page'));
 
+            // === Withdraw Page Full Functionality ===
+
+         // --- UTILITY HELPERS ---
+        function $(selector) { return document.querySelector(selector); }
+        function $all(selector) { return Array.from(document.querySelectorAll(selector)); }
+        function show(el) { el.classList.remove('page-hidden'); }
+        function hide(el) { el.classList.add('page-hidden'); }
+        function now() { return Math.floor(Date.now() / 1000); }
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+        function fmtUsd(val) { return Number(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 }); }
+        function formatCountdown(sec) {
+        if (sec <= 0) return "0s";
+       const d = Math.floor(sec / 86400);
+       const h = Math.floor((sec % 86400) / 3600);
+       const m = Math.floor((sec % 3600) / 60);
+        const s = sec % 60;
+       return [
+         d ? `${d}d` : '',
+         h ? `${h}h` : '',
+         m ? `${m}m` : '',
+        `${s}s`
+       ].filter(Boolean).join(' ');
+     }
+
+       // --- STORAGE KEYS & APP STATE ---
+       const LS = {
+       withdraws: 'withdrawals',
+       withdrawSusp: 'withdrawSusp',
+       transactions: 'transactions'
+       };
+      const app = {
+      user: { accountId: 'demoUser', address: '0x123' },
+      confirmationCodes: [
+      '914236', '492761', '582037', '610374', '835209', '137264', '294672', '471930', '760482', '349861',
+      '517320', '862495', '304917', '679254', '789123', '452816', '621347', '908123', '213879', '395082'
+         ]
+       };
+     let sendAttempts = 0;
+
+      // --- LOCAL STORAGE HELPERS ---
+   function getLS(key, fallback) {
+     try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+    catch { return fallback; }
+    }
+    function saveLS(key, val) {
+    localStorage.setItem(key, JSON.stringify(val));
+    }
+
+     // --- WITHDRAW PAGE LOGIC ---
+     function goToWithdrawStep(step) {
+     hide($('#withdraw-step-1'));
+      hide($('#withdraw-confirmation-page'));
+     hide($('#withdraw-code-page'));
+      hide($('#withdraw-processing-page'));
+      hide($('#withdraw-success-page'));
+  if (step === 1) show($('#withdraw-step-1'));
+  if (step === 2) show($('#withdraw-confirmation-page'));
+  if (step === 3) show($('#withdraw-code-page'));
+  if (step === 4) show($('#withdraw-processing-page'));
+  if (step === 5) show($('#withdraw-success-page'));
+}
+
+// Back button
+$('#withdraw-back-btn').onclick = function () {
+  goToWithdrawStep(1);
+  $('#withdraw-address').value = '';
+  $('#withdraw-amount').value = '';
+};
+
+// Step 1: Confirm Withdraw
+$('#confirm-withdraw-btn').onclick = function () {
+  const coin = $('#withdraw-coin').value;
+  const address = $('#withdraw-address').value.trim();
+  const amount = $('#withdraw-amount').value.trim();
+
+  if (!coin || !address || !amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+    alert("Please enter all fields correctly.");
+    return;
+  }
+  $('#confirm-coin').innerText = coin;
+  $('#confirm-address').innerText = address;
+  $('#confirm-amount').innerText = amount;
+  goToWithdrawStep(2);
+};
+
+// Step 2: Submit Transaction (show code input)
+$('#submit-tx-btn').onclick = function () {
+  $('#withdraw-code-input').value = '';
+  $('#withdraw-code-msg').innerText = '';
+  goToWithdrawStep(3);
+};
+
+// Step 3: Enter 6-digit code and validate
+$('#withdraw-code-submit-btn').onclick = async function () {
+  let code = $('#withdraw-code-input').value.trim();
+  let susp = getLS(LS.withdrawSusp, {})[app.user.accountId];
+  $('#withdraw-code-msg').innerText = 'Processing...';
+  await sleep(1500);
+
+  // Check for suspension
+  if (susp && now() < susp.until) {
+    $('#withdraw-code-msg').innerText = `Withdrawals suspended for ${formatCountdown(susp.until - now())}`;
+    return;
+  }
+
+  if (app.confirmationCodes.includes(code)) {
+    // Success: Start withdrawal with 24hr countdown, persist
+    const coin = $('#withdraw-coin').value;
+    const address = $('#withdraw-address').value.trim();
+    const amount = Number($('#withdraw-amount').value.trim());
+    const withdrawal = {
+      coin,
+      address,
+      amount,
+      start: now(),
+      end: now() + 30, // Demo: 30 seconds processing
+      status: "processing",
+      userId: app.user.accountId
+    };
+
+    let withdrawals = getLS(LS.withdraws, []);
+    withdrawals.push(withdrawal);
+    saveLS(LS.withdraws, withdrawals);
+
+    // Add to activity/transactions
+    let txs = getLS(LS.transactions, []);
+    txs.push({ type: 'withdraw', ...withdrawal });
+    saveLS(LS.transactions, txs);
+
+    sendAttempts = 0;
+    showWithdrawProcessing(withdrawal);
+    goToWithdrawStep(4);
+  } else {
+    sendAttempts++;
+    if (sendAttempts >= 5) {
+      let suspObj = getLS(LS.withdrawSusp, {});
+      suspObj[app.user.accountId] = { until: now() + 172800, count: sendAttempts };
+      saveLS(LS.withdrawSusp, suspObj);
+      $('#withdraw-code-msg').innerText = "Withdrawal suspended for 48 hours.";
+    } else {
+      $('#withdraw-code-msg').innerText = "Validation failed, please enter the correct 6-digit code.";
+    }
+  }
+};
+
+// Step 4: Processing Countdown and Completion
+let processTimer = null;
+function showWithdrawProcessing(withdrawal) {
+  goToWithdrawStep(4);
+  let countdownEl = $('#withdraw-processing-page .mt-4');
+  let count = withdrawal.end - now();
+
+  function tick() {
+    count = withdrawal.end - now();
+    if (count > 0) {
+      countdownEl.innerHTML = `Processing withdrawal...<br><span>${formatCountdown(count)}</span>`;
+    } else {
+      clearInterval(processTimer);
+      markWithdrawalComplete(withdrawal);
+      goToWithdrawStep(5);
+    }
+  }
+
+  tick();
+  processTimer && clearInterval(processTimer);
+  processTimer = setInterval(tick, 1000);
+}
+
+function markWithdrawalComplete(withdrawal) {
+  let withdrawals = getLS(LS.withdraws, []);
+  withdrawals = withdrawals.map(wd => {
+    if (
+      wd.address === withdrawal.address &&
+      wd.start === withdrawal.start &&
+      wd.userId === withdrawal.userId
+    ) {
+      wd.status = "completed";
+      wd.completedAt = now();
+    }
+    return wd;
+  });
+  saveLS(LS.withdraws, withdrawals);
+}
+
+// Step 5: Back to Home
+$('#back-to-home-btn').onclick = function () {
+  $('#withdraw-address').value = '';
+  $('#withdraw-amount').value = '';
+  goToWithdrawStep(1);
+  renderOngoingWithdrawals();
+};
+
+// Restore ongoing withdrawals on reload
+window.addEventListener('DOMContentLoaded', function () {
+  let withdrawals = getLS(LS.withdraws, []);
+  let ongoing = withdrawals.filter(
+    wd => wd.status === "processing" && now() < wd.end
+  );
+  if (ongoing.length) {
+    showWithdrawProcessing(ongoing[0]);
+  } else {
+    goToWithdrawStep(1);
+  }
+  renderOngoingWithdrawals();
+});
+
+// Activity/transaction list (render recent withdrawals)
+function renderOngoingWithdrawals() {
+  const ongoing = (getLS(LS.withdraws, []) || []).filter(wd => wd.status === "processing" && now() < wd.end);
+  let list = ongoing.map(wd => {
+    const left = wd.end - now();
+    return `
+      <div class="bg-gray-800 rounded p-2 mb-2">
+        <div><b>Processing Withdrawal</b></div>
+        <div>Coin: <span>${wd.coin}</span></div>
+        <div>Address: <span>${wd.address}</span></div>
+        <div>Amount: <span>${fmtUsd(wd.amount)}</span></div>
+        <div>Time Remaining: <span class="countdown" data-end="${wd.end}">${formatCountdown(left)}</span></div>
+      </div>
+    `;
+  }).join('');
+  const recentTx = document.getElementById('recentTx');
+  if (recentTx) recentTx.innerHTML = list || '<div class="text-gray-400">No transactions — demo mode.</div>';
+}
+setInterval(() => {
+  $all('.countdown').forEach(el => {
+    const end = parseInt(el.dataset.end, 10);
+    const left = end - now();
+    el.innerText = formatCountdown(left > 0 ? left : 0);
+          });
+        renderOngoingWithdrawals();
+         }, 1000);
+
+
+             
         // Deposit flow event listeners
         depositCoinList.addEventListener('click', (e) => {
             const coinButton = e.target.closest('.deposit-coin-select');
