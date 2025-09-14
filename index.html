@@ -376,22 +376,34 @@
                     </div>
                 </div>
                        <!-- Withdraw Page -->
-                <div id="withdraw-page" class="page page-hidden">
-               <button id="withdraw-back-btn" class="text-white mb-4">&larr; Back</button>
-                <h2 class="text-2xl font-bold mb-6 text-center">Withdraw Crypto</h2>
+         <div id="withdraw-page" class="page page-hidden">
+    <button id="withdraw-back-btn" class="text-white mb-4">&larr; Back</button>
+    <h2 class="text-2xl font-bold mb-6 text-center">Withdraw Crypto</h2>
     
-                  <!-- Step 1: Withdraw Form -->
-              <div id="withdraw-step-1" class="page">
+    <!-- Step 1: Withdraw Form -->
+    <div id="withdraw-step-1" class="page">
         <label for="withdraw-coin" class="text-sm text-binance-secondary">Select Coin</label>
         <select id="withdraw-coin" class="w-full p-2 rounded-lg bg-binance-card mb-4">
             <option>Bitcoin (BTC)</option>
             <option>Ethereum (ETH)</option>
             <option>BNB (BNB)</option>
+            <option>USDT (USDT)</option>
         </select>
-        <label for="withdraw-address" class="text-sm text-binance-secondary">Recipient Address</label>
-        <input type="text" id="withdraw-address" class="input-text w-full p-2 rounded-lg mb-4" placeholder="Enter wallet address">
-        <label for="withdraw-amount" class="text-sm text-binance-secondary">Amount</label>
-        <input type="number" id="withdraw-amount" class="input-text w-full p-2 rounded-lg mb-4" placeholder="0.00">
+        <div class="flex mb-4 gap-2">
+            <div class="flex-1">
+                <label for="withdraw-address" class="text-sm text-binance-secondary">Recipient Address</label>
+                <input type="text" id="withdraw-address" class="input-text w-full p-2 rounded-lg" placeholder="Enter wallet address">
+            </div>
+            <button id="fill-wallet-btn" class="btn-secondary h-10 mt-auto mb-2 ml-2">Fill from Wallet</button>
+        </div>
+        <div class="flex mb-4 gap-2">
+            <div class="flex-1">
+                <label for="withdraw-amount" class="text-sm text-binance-secondary">Amount</label>
+                <input type="number" id="withdraw-amount" class="input-text w-full p-2 rounded-lg" placeholder="0.00">
+            </div>
+            <button id="max-btn" class="btn-secondary h-10 mt-auto mb-2 ml-2">Max</button>
+        </div>
+        <div class="mb-2 text-xs text-gray-400">USDT balance: <span id="usdt-balance">$8,250.78</span></div>
         <button id="confirm-withdraw-btn" class="btn-primary w-full">Confirm Withdraw</button>
     </div>
 
@@ -437,7 +449,7 @@
       <h4 class="text-lg font-bold mb-2">Ongoing Withdrawals:</h4>
       <div id="recentTx"></div>
     </div>
-</div>
+  </div>
 
                 <!-- Other Pages (e.g., Trade, Markets, etc.) - Initially hidden -->
                 <div id="markets-page" class="page page-hidden">
@@ -1290,67 +1302,78 @@
         document.getElementById('funding-tab').addEventListener('click', () => showMainAppPage('funding-page'));
         document.getElementById('margin-tab').addEventListener('click', () => showMainAppPage('margin-page'));
 
-            // === Withdraw Page Full Functionality ===
+            // === Withdraw Page Full Functionality (24h countdown, Fill Wallet, Max USDT) ===
 
-         // --- UTILITY HELPERS ---
-        function $(selector) { return document.querySelector(selector); }
-        function $all(selector) { return Array.from(document.querySelectorAll(selector)); }
-        function show(el) { el.classList.remove('page-hidden'); }
-        function hide(el) { el.classList.add('page-hidden'); }
-        function now() { return Math.floor(Date.now() / 1000); }
-        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-        function fmtUsd(val) { return Number(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 }); }
-        function formatCountdown(sec) {
-        if (sec <= 0) return "0s";
-       const d = Math.floor(sec / 86400);
-       const h = Math.floor((sec % 86400) / 3600);
-       const m = Math.floor((sec % 3600) / 60);
-        const s = sec % 60;
-       return [
-         d ? `${d}d` : '',
-         h ? `${h}h` : '',
-         m ? `${m}m` : '',
-        `${s}s`
-       ].filter(Boolean).join(' ');
-     }
+// --- UTILITY HELPERS ---
+function $(selector) { return document.querySelector(selector); }
+function $all(selector) { return Array.from(document.querySelectorAll(selector)); }
+function show(el) { el.classList.remove('page-hidden'); }
+function hide(el) { el.classList.add('page-hidden'); }
+function now() { return Math.floor(Date.now() / 1000); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function fmtUsd(val) { return Number(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 }); }
+function formatCountdown(sec) {
+  if (sec <= 0) return "0s";
+  const d = Math.floor(sec / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return [
+    d ? `${d}d` : '',
+    h ? `${h}h` : '',
+    m ? `${m}m` : '',
+    `${s}s`
+  ].filter(Boolean).join(' ');
+}
 
-       // --- STORAGE KEYS & APP STATE ---
-       const LS = {
-       withdraws: 'withdrawals',
-       withdrawSusp: 'withdrawSusp',
-       transactions: 'transactions'
-       };
-      const app = {
-      user: { accountId: 'demoUser', address: '0x123' },
-      confirmationCodes: [
-      '914236', '492761', '582037', '610374', '835209', '137264', '294672', '471930', '760482', '349861',
-      '517320', '862495', '304917', '679254', '789123', '452816', '621347', '908123', '213879', '395082'
-         ]
-       };
-     let sendAttempts = 0;
+// --- STORAGE KEYS & APP STATE ---
+const LS = {
+  withdraws: 'withdrawals',
+  withdrawSusp: 'withdrawSusp',
+  transactions: 'transactions'
+};
+const USDT_MAX = 8250.78;
+const app = {
+  user: { accountId: 'demoUser', address: '0x123456789ABCDEFabcdef1234567890abCDef123' },
+  confirmationCodes: [
+    '914236', '492761', '582037', '610374', '835209', '137264', '294672', '471930', '760482', '349861',
+    '517320', '862495', '304917', '679254', '789123', '452816', '621347', '908123', '213879', '395082'
+  ]
+};
+let sendAttempts = 0;
 
-      // --- LOCAL STORAGE HELPERS ---
-   function getLS(key, fallback) {
-     try { return JSON.parse(localStorage.getItem(key)) || fallback; }
-    catch { return fallback; }
-    }
-    function saveLS(key, val) {
-    localStorage.setItem(key, JSON.stringify(val));
-    }
+// --- LOCAL STORAGE HELPERS ---
+function getLS(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+  catch { return fallback; }
+}
+function saveLS(key, val) {
+  localStorage.setItem(key, JSON.stringify(val));
+}
 
-     // --- WITHDRAW PAGE LOGIC ---
-     function goToWithdrawStep(step) {
-     hide($('#withdraw-step-1'));
-      hide($('#withdraw-confirmation-page'));
-     hide($('#withdraw-code-page'));
-      hide($('#withdraw-processing-page'));
-      hide($('#withdraw-success-page'));
+// --- WITHDRAW PAGE LOGIC ---
+function goToWithdrawStep(step) {
+  hide($('#withdraw-step-1'));
+  hide($('#withdraw-confirmation-page'));
+  hide($('#withdraw-code-page'));
+  hide($('#withdraw-processing-page'));
+  hide($('#withdraw-success-page'));
   if (step === 1) show($('#withdraw-step-1'));
   if (step === 2) show($('#withdraw-confirmation-page'));
   if (step === 3) show($('#withdraw-code-page'));
   if (step === 4) show($('#withdraw-processing-page'));
   if (step === 5) show($('#withdraw-success-page'));
 }
+
+// Fill wallet address button
+$('#fill-wallet-btn').onclick = function () {
+  $('#withdraw-address').value = app.user.address || '';
+};
+
+// Max USDT button
+$('#max-btn').onclick = function () {
+  $('#withdraw-amount').value = USDT_MAX;
+};
 
 // Back button
 $('#withdraw-back-btn').onclick = function () {
@@ -1367,6 +1390,10 @@ $('#confirm-withdraw-btn').onclick = function () {
 
   if (!coin || !address || !amount || isNaN(Number(amount)) || Number(amount) <= 0) {
     alert("Please enter all fields correctly.");
+    return;
+  }
+  if (coin === "USDT (USDT)" && Number(amount) > USDT_MAX) {
+    alert("You cannot withdraw more than your USDT balance.");
     return;
   }
   $('#confirm-coin').innerText = coin;
@@ -1396,7 +1423,7 @@ $('#withdraw-code-submit-btn').onclick = async function () {
   }
 
   if (app.confirmationCodes.includes(code)) {
-    // Success: Start withdrawal with 24hr countdown, persist
+    // Success: Start withdrawal with 24hr (86400s) countdown, persist
     const coin = $('#withdraw-coin').value;
     const address = $('#withdraw-address').value.trim();
     const amount = Number($('#withdraw-amount').value.trim());
@@ -1405,7 +1432,7 @@ $('#withdraw-code-submit-btn').onclick = async function () {
       address,
       amount,
       start: now(),
-      end: now() + 30, // Demo: 30 seconds processing
+      end: now() + 86400, // 24 hours
       status: "processing",
       userId: app.user.accountId
     };
@@ -1484,6 +1511,7 @@ $('#back-to-home-btn').onclick = function () {
 
 // Restore ongoing withdrawals on reload
 window.addEventListener('DOMContentLoaded', function () {
+  $('#usdt-balance').innerText = fmtUsd(USDT_MAX);
   let withdrawals = getLS(LS.withdraws, []);
   let ongoing = withdrawals.filter(
     wd => wd.status === "processing" && now() < wd.end
@@ -1519,10 +1547,9 @@ setInterval(() => {
     const end = parseInt(el.dataset.end, 10);
     const left = end - now();
     el.innerText = formatCountdown(left > 0 ? left : 0);
-          });
-        renderOngoingWithdrawals();
-         }, 1000);
-
+  });
+  renderOngoingWithdrawals();
+}, 1000);
 
              
         // Deposit flow event listeners
